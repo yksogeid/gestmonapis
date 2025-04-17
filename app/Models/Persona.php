@@ -20,4 +20,14 @@ class Persona extends Model
         'apellidos',
         'email'
     ];
+
+    public function usuario()
+    {
+        return $this->hasOne(Usuario::class, 'persona_idpersona', 'idpersona');
+    }
+
+    public function carreras()
+    {
+        return $this->hasMany(PersonaCarrera::class, 'persona_idpersona', 'idpersona');
+    }
 }

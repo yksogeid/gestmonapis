@@ -16,7 +16,10 @@ class AuthController extends Controller
                 'password' => 'required'
             ]);
 
-            $usuario = Usuario::with(['persona', 'roles.rol'])->where('username', $request->username)->first();
+            // Load usuario with persona, roles, and persona's carreras
+            $usuario = Usuario::with(['persona', 'roles.rol', 'persona.carreras.carrera'])
+                ->where('username', $request->username)
+                ->first();
 
             if (!$usuario || !Hash::check($request->password, $usuario->password)) {
                 return response()->json([
@@ -41,6 +44,12 @@ class AuthController extends Controller
                         return [
                             'id' => $userRole->rol->idrol,
                             'nombre' => $userRole->rol->nombre
+                        ];
+                    }),
+                    'carreras' => $usuario->persona->carreras->map(function($personaCarrera) {
+                        return [
+                            'id' => $personaCarrera->carrera->idcarrera,
+                            'nombre' => $personaCarrera->carrera->nombre
                         ];
                     })
                 ]

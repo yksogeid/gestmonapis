@@ -6,6 +6,8 @@ use App\Models\Persona;
 use App\Models\Usuario;
 use App\Models\UsuarioRol;
 use App\Models\Rol;
+use App\Models\Carrera;
+use App\Models\PersonaCarrera;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
@@ -38,6 +40,17 @@ class PersonaController extends Controller
                 ], 404);
             }
 
+            // Validate carrera if provided
+            $carrera = null;
+            if ($request->has('carrera_id')) {
+                $carrera = Carrera::find($request->carrera_id);
+                if (!$carrera) {
+                    return response()->json([
+                        'error' => 'La carrera especificada no existe'
+                    ], 404);
+                }
+            }
+
             // Create persona
             $persona = Persona::create($request->all());
 
@@ -54,16 +67,30 @@ class PersonaController extends Controller
                 'usuario_idusuario' => $usuario->idusuario
             ]);
 
+            // Assign carrera if provided
+            if ($carrera) {
+                PersonaCarrera::create([
+                    'persona_idpersona' => $persona->idpersona,
+                    'carrera_idcarrera' => $request->carrera_id
+                ]);
+            }
+
             DB::commit();
 
-            return response()->json([
+            $response = [
                 'message' => 'Persona y usuario creados exitosamente',
                 'persona' => $persona,
                 'usuario' => [
                     'username' => $usuario->username,
                     'rol' => $rol->nombre
                 ]
-            ], 201);
+            ];
+
+            if ($carrera) {
+                $response['carrera'] = $carrera->nombre;
+            }
+
+            return response()->json($response, 201);
             
         } catch (\Exception $e) {
             DB::rollBack();
