@@ -3,11 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Usuario extends Model
+class Usuario extends Authenticatable
 {
-    use HasFactory;
+    use HasFactory, HasApiTokens;
 
     protected $table = 'usuario';
     protected $primaryKey = 'idusuario';
@@ -26,5 +27,11 @@ class Usuario extends Model
     public function persona()
     {
         return $this->belongsTo(Persona::class, 'persona_idpersona', 'idpersona');
+    }
+
+    // Add this relationship to the Usuario model
+    public function roles()
+    {
+        return $this->hasMany(UsuarioRol::class, 'usuario_idusuario', 'idusuario');
     }
 }

@@ -12,6 +12,9 @@ use App\Http\Controllers\RolController;
 use App\Http\Controllers\SolicitudAsesoriaController;
 use App\Http\Controllers\UsuarioController;
 
+// Login route
+Route::post('/login', [AuthController::class, 'login']);
+Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
 Route::apiResource('carreras', CarreraController::class);
 Route::apiResource('materias', MateriaController::class);
 Route::apiResource('personas', PersonaController::class);
