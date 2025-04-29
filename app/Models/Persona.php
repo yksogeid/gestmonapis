@@ -30,4 +30,10 @@ class Persona extends Model
     {
         return $this->hasMany(PersonaCarrera::class, 'persona_idpersona', 'idpersona');
     }
+
+    // Add this relationship to your existing Persona model
+    public function materias()
+    {
+        return $this->hasMany(PersonaMateria::class, 'persona_idpersona', 'idpersona');
+    }
 }

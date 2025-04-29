@@ -11,6 +11,7 @@ use App\Http\Controllers\PersonaCarreraController;
 use App\Http\Controllers\RolController;
 use App\Http\Controllers\SolicitudAsesoriaController;
 use App\Http\Controllers\UsuarioController;
+use App\Http\Controllers\PersonaMateriaController;
 
 // Login route
 Route::post('/login', [AuthController::class, 'login']);
@@ -22,3 +23,4 @@ Route::apiResource('usuarios', UsuarioController::class);
 Route::apiResource('roles', RolController::class);
 Route::apiResource('solicitudes-asesoria', SolicitudAsesoriaController::class);
 Route::resource('persona-carreras', PersonaCarreraController::class);
+Route::apiResource('persona-materias', PersonaMateriaController::class);
