@@ -12,13 +12,14 @@ class PersonaMateriaController extends Controller
 {
     public function index()
     {
-        $monitors = PersonaMateria::with(['persona', 'materia'])
+        $monitors = PersonaMateria::with(['persona.carreras.carrera', 'materia'])
             ->get()
             ->groupBy('persona_idpersona')
             ->map(function ($personaMaterias) {
                 $persona = $personaMaterias->first()->persona;
                 return [
                     'nombre' => $persona->nombres . ' ' . $persona->apellidos,
+                    'carrera' => $persona->carreras->first()?->carrera?->nombre ?? 'No asignada',
                     'materias' => $personaMaterias->map(function ($item) {
                         return [
                             'nombre' => $item->materia->nombre,
@@ -28,9 +29,10 @@ class PersonaMateriaController extends Controller
                     })->values()
                 ];
             })->values();
-
+    
         return response()->json($monitors);
     }
+    
 
     public function store(Request $request)
     {
